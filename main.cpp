@@ -2,9 +2,9 @@
 
 
 /* std::mutex
- *             mutex.lock();   »ñÈ¡mutex,ÈôÊ§°Ü,ÔòµÈ´ı
- *             mutex.try_lock(); ³¢ÊÔ»ñÈ¡mutex,ÈôÊ§°Ü,²»µÈ´ı,return 0;
- *             mutex.unlock(); ÊÍ·Åµ±Ç°mutex
+ *             mutex.lock();   è·å–mutex,è‹¥å¤±è´¥,åˆ™ç­‰å¾…
+ *             mutex.try_lock(); å°è¯•è·å–mutex,è‹¥å¤±è´¥,ä¸ç­‰å¾…,return 0;
+ *             mutex.unlock(); é‡Šæ”¾å½“å‰mutex
  */
 
 #define THREADDEBUG std::cout << "[Thread " << thread_id << "]: "
@@ -15,14 +15,14 @@
 // main
 int main()
 {
-    // ³õÊ¼»¯WSA
+    // åˆå§‹åŒ–WSA
     if(Init_WSA()) exit(1);
 
-    // ´´½¨ÃèÊö·û
+    // åˆ›å»ºæè¿°ç¬¦
     SOCKET my_socket;
     if(Create_SOCKET(&my_socket)) exit(1);
 
-    // °ó¶¨¶Ë¿ÚµØÖ·
+    // ç»‘å®šç«¯å£åœ°å€
     if(Bind_addr(my_socket)) exit(1);
 
     for(int i = 0; i < MAXSIZE; i++) DNSPocket[i].available = true;
@@ -58,25 +58,25 @@ int main()
             }
         }
     }
-    // ½áÊøWSA
+    // ç»“æŸWSA
     WSACleanup();
     return 0;
 }
 
-// ³õÊ¼»¯WSA
+// åˆå§‹åŒ–WSA
 int Init_WSA()
 {
     WORD versionRequired = MAKEWORD(2, 2);
     WSADATA wsadata;
     if(WSAStartup(versionRequired, &wsadata) != 0)
     {
-        printf("³õÊ¼»¯WinSockÊ§°Ü\n");
+        printf("åˆå§‹åŒ–WinSockå¤±è´¥\n");
         return 1;
     }
     return 0;
 }
 
-// ´´½¨ÃèÊö·û
+// åˆ›å»ºæè¿°ç¬¦
 int Create_SOCKET(SOCKET *S_Socket)
 {
     SOCKET Socket = socket(AF_INET, SOCK_DGRAM, 0);
@@ -93,14 +93,14 @@ int Create_SOCKET(SOCKET *S_Socket)
     }
 }
 
-// °ó¶¨"127.0.0.1"IP ºÍ 53 ¶Ë¿Ú
+// ç»‘å®š"127.0.0.1"IP å’Œ 53 ç«¯å£
 int Bind_addr(SOCKET S_Socket)
 {
-    struct sockaddr_in addr;   // °ó¶¨Ò»¸ö¶Ë¿Ú
+    struct sockaddr_in addr;   // ç»‘å®šä¸€ä¸ªç«¯å£
     memset(&addr, 0, sizeof(struct sockaddr_in));
-    addr.sin_family = AF_INET; // Ğ­Òé×å ¹Ì¶¨Öµ
-    addr.sin_port = htons(53); // 53¶Ë¿Ú UDP´«Êä
-    addr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
+    addr.sin_family = AF_INET; // åè®®æ— å›ºå®šå€¼
+    addr.sin_port = htons(53); // 53ç«¯å£ UDPä¼ è¾“
+    addr.sin_addr.S_un.S_addr = inet_addr("0.0.0.0");
     if(bind(S_Socket, (struct sockaddr *)&addr, sizeof(addr)) == SOCKET_ERROR)
     {
         printf("Bind socket error!\n");
@@ -109,7 +109,7 @@ int Bind_addr(SOCKET S_Socket)
     return 0;
 }
 
-// ±¾µØÎ´·¢ÏÖ,ÏòÉÏ·¢ËÍdnsÇëÇó
+// æœ¬åœ°æœªå‘ç°,å‘ä¸Šå‘é€dnsè¯·æ±‚
 void send_out(char * buff, int buff_size, struct sockaddr_in recv_from, SOCKET my_socket, int thread_id)
 {
     unsigned short ID = (((int)buff[0])<<8) + (int)buff[1];
@@ -154,7 +154,7 @@ void send_out(char * buff, int buff_size, struct sockaddr_in recv_from, SOCKET m
     THREADDEBUG <<"Upper socket processed over!\n";
 }
 
-// ´¦Àí±¾µØÎÄ¼şip
+// å¤„ç†æœ¬åœ°æ–‡ä»¶ip
 void encodelocaldns(char *buff, int pocket_size, struct sockaddr_in recv_from, string ip_addr, DnsHeader Dnshdr, SOCKET my_socket, int thread_id, int flag)
 {
     char request_data[512];
@@ -222,7 +222,7 @@ void encodelocaldns(char *buff, int pocket_size, struct sockaddr_in recv_from, s
     THREADDEBUG <<"Local After Send Data ... \n";
 }
 
-// ½âÎö°üÍ·
+// è§£æåŒ…å¤´
 DnsHeader HandleDnsHeader(char * buff)
 {
     DnsHeader tmp;
@@ -235,7 +235,7 @@ DnsHeader HandleDnsHeader(char * buff)
     return tmp;
 }
 
-// Ïß³Ì´¦ÀípocketÖĞµÄÊı¾İ
+// çº¿ç¨‹å¤„ç†pocketä¸­çš„æ•°æ®
 void DNSHandleThread(map<string, string>dnsmap, SOCKET my_socket, int thread_id)
 {
     Sleep(100);
@@ -290,14 +290,14 @@ Pocket GetDNSPocket()
     return ret;
 }
 
-// ´¦Àí½ÓÊÕµ½µÄ°ü
+// å¤„ç†æ¥æ”¶åˆ°çš„åŒ…
 void handle_pocket(char *buff, int pocket_size, struct sockaddr_in recv_from, map<string, string> dnsmap, SOCKET my_socket, int thread_id)
 {
     int len = sizeof(struct sockaddr_in);
     char * tmp = buff;
     int flag = 0; // flag for the ip = "0.0.0.0"
 
-    if((buff[2] & 0x80) == 0) // Èç¹ûÊÇ²éÑ¯±¨ÎÄµÄ»°
+    if((buff[2] & 0x80) == 0) // å¦‚æœæ˜¯æŸ¥è¯¢æŠ¥æ–‡çš„è¯
     {
         DnsHeader DnsHdr = HandleDnsHeader(buff);
 
@@ -308,7 +308,7 @@ void handle_pocket(char *buff, int pocket_size, struct sockaddr_in recv_from, ma
         }
         map<string, string> QuireMap = dnsmap;
 
-        // »ñÈ¡ÓòÃû,¸ù¾İ±¨ÎÄ¸ñÊ½RFC
+        // è·å–åŸŸå,æ ¹æ®æŠ¥æ–‡æ ¼å¼RFC
         string domain_name = "";
         for(int i = 12; i < pocket_size; )
         {
@@ -324,29 +324,29 @@ void handle_pocket(char *buff, int pocket_size, struct sockaddr_in recv_from, ma
         }
         map<string, string>::iterator iter;
         THREADDEBUG << "Decoded domain name : " << domain_name.c_str() <<endl;
-        if(QuireMap.count(domain_name))  // ´æÔÚ±¾µØÎÄ¼şÖĞ
+        if(QuireMap.count(domain_name))  // å­˜åœ¨æœ¬åœ°æ–‡ä»¶ä¸­
         {
             iter = QuireMap.find(domain_name);
             THREADDEBUG << "Local Current IP : " << iter->second.c_str() <<endl;
             if(!strcmp(iter->second.c_str(), "0.0.0.0"))
                 flag = 1;
-            // ±àÂë½øĞĞ´«Êä
+            // ç¼–ç è¿›è¡Œä¼ è¾“
             encodelocaldns(buff, pocket_size, recv_from, iter->second, DnsHdr, my_socket, thread_id, flag);
         }
-        else // ²»´æÔÚ±¾µØÎÄ¼şÖĞ£¬ËÍ³ö
+        else // ä¸å­˜åœ¨æœ¬åœ°æ–‡ä»¶ä¸­ï¼Œé€å‡º
         {
             THREADDEBUG << "Send out to the Internet!" <<endl;
-//            printf("²»ÔÚ±¾µØÎÄ¼şÖĞ,ËÍ³ö\n");
+//            printf("ä¸åœ¨æœ¬åœ°æ–‡ä»¶ä¸­,é€å‡º\n");
             send_out(buff, pocket_size, recv_from, my_socket, thread_id);
         }
     }
-    else // ÏìÓ¦±¨ÎÄ²»×ö´¦Àí
+    else // å“åº”æŠ¥æ–‡ä¸åšå¤„ç†
     {
-        THREADDEBUG<<"ÕâÊÇÒ»¸öÏìÓ¦±¨ÎÄ,²»×ö´¦Àí!!!!!!!!!!!!!!!!\n";
+        THREADDEBUG<<"è¿™æ˜¯ä¸€ä¸ªå“åº”æŠ¥æ–‡,ä¸åšå¤„ç†!!!!!!!!!!!!!!!!\n";
     }
 }
 
-// ¼ÓÔØ±¾µØÎÄ¼ş
+// åŠ è½½æœ¬åœ°æ–‡ä»¶
 map<string, string> load_file()
 {
     std::ifstream infile;
@@ -354,7 +354,7 @@ map<string, string> load_file()
     string ip, domain;
 
     infile.open("dnsrelay.txt");
-    if(!infile) cout<<"±¾µØÎÄ¼ş¶ÁÈ¡´íÎó\n";
+    if(!infile) cout<<"æœ¬åœ°æ–‡ä»¶è¯»å–é”™è¯¯\n";
     while(!infile.eof())
     {
         infile>>ip;
