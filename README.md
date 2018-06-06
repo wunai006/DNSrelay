@@ -7,3 +7,4 @@ and you can open name.pcapng in wireshark.
 
 Please use C++11 to make it.
 
+You'd better use command to make the file.
